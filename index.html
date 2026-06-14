@@ -20,7 +20,7 @@
 
     .container {
         background: white;
-        width: 700px;
+        width: 800px;
         padding: 30px;
         border-radius: 12px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -32,14 +32,14 @@
     }
 
     .bill-section {
-        margin-bottom: 25px;
+        margin-bottom: 20px;
     }
 
     label {
         font-weight: bold;
     }
 
-    input {
+    input, select {
         width: 100%;
         padding: 10px;
         margin-top: 6px;
@@ -64,15 +64,13 @@
     }
 
     button {
-        width: 100%;
-        padding: 14px;
-        margin-top: 25px;
+        padding: 8px 10px;
         border: none;
-        border-radius: 8px;
+        border-radius: 6px;
         background: #007bff;
         color: white;
-        font-size: 16px;
         cursor: pointer;
+        font-size: 12px;
     }
 
     button:hover {
@@ -83,108 +81,145 @@
         font-weight: bold;
         color: #28a745;
     }
+
+    .calc-btn {
+        width: 100%;
+        padding: 14px;
+        margin-top: 20px;
+        font-size: 16px;
+        background: #28a745;
+    }
+
+    .calc-btn:hover {
+        background: #1f7a33;
+    }
 </style>
 </head>
+
 <body>
 
 <div class="container">
+
     <h1>Utility Bill Splitter</h1>
 
+    <!-- BILL -->
     <div class="bill-section">
-        <label for="bill">Utility Bill This Month ($)</label>
+        <label>Utility Bill ($)</label>
         <input type="number" id="bill" placeholder="Enter total bill">
     </div>
 
-   <div class="bill-section">
-    <label>Select Month</label>
-    <select id="monthSelect" onchange="updateMonthDays()">
-        <option value="0">January</option>
-        <option value="1">February</option>
-        <option value="2">March</option>
-        <option value="3">April</option>
-        <option value="4">May</option>
-        <option value="5">June</option>
-        <option value="6">July</option>
-        <option value="7">August</option>
-        <option value="8">September</option>
-        <option value="9">October</option>
-        <option value="10">November</option>
-        <option value="11">December</option>
-    </select>
-</div>
+    <!-- MONTH SELECTOR -->
+    <div class="bill-section">
+        <label>Select Month</label>
+        <select id="monthSelect">
+            <option value="0">January</option>
+            <option value="1">February</option>
+            <option value="2">March</option>
+            <option value="3">April</option>
+            <option value="4">May</option>
+            <option value="5">June</option>
+            <option value="6">July</option>
+            <option value="7">August</option>
+            <option value="8">September</option>
+            <option value="9">October</option>
+            <option value="10">November</option>
+            <option value="11">December</option>
+        </select>
+    </div>
 
-<button onclick="fillWholeMonth()">Whole Month</button>
-
-<p id="monthInfo"></p>
-   
+    <!-- TABLE -->
     <table>
         <thead>
             <tr>
                 <th>Person</th>
                 <th>Days Stayed</th>
-                <th>Amount Owed</th>
+                <th>Actions</th>
+                <th>Owed</th>
             </tr>
         </thead>
-        <tbody id="tableBody">
+
+        <tbody>
             <tr>
                 <td>Dya</td>
                 <td><input type="number" id="Dya" min="0"></td>
+                <td><button onclick="fillPerson('Dya')">Whole Month</button></td>
                 <td class="result" id="Dya-result">$0.00</td>
             </tr>
+
             <tr>
                 <td>Jay</td>
                 <td><input type="number" id="Jay" min="0"></td>
+                <td><button onclick="fillPerson('Jay')">Whole Month</button></td>
                 <td class="result" id="Jay-result">$0.00</td>
             </tr>
+
             <tr>
                 <td>Kyle</td>
                 <td><input type="number" id="Kyle" min="0"></td>
+                <td><button onclick="fillPerson('Kyle')">Whole Month</button></td>
                 <td class="result" id="Kyle-result">$0.00</td>
             </tr>
+
             <tr>
                 <td>Anthony</td>
                 <td><input type="number" id="Anthony" min="0"></td>
+                <td><button onclick="fillPerson('Anthony')">Whole Month</button></td>
                 <td class="result" id="Anthony-result">$0.00</td>
             </tr>
+
             <tr>
                 <td>Simon</td>
                 <td><input type="number" id="Simon" min="0"></td>
+                <td><button onclick="fillPerson('Simon')">Whole Month</button></td>
                 <td class="result" id="Simon-result">$0.00</td>
             </tr>
         </tbody>
     </table>
 
-    <button onclick="calculateSplit()">Calculate</button>
+    <button class="calc-btn" onclick="calculateSplit()">Calculate</button>
+
 </div>
 
 <script>
+
+const people = ["Dya", "Jay", "Kyle", "Anthony", "Simon"];
+
+function getDaysInMonth() {
+    const month = parseInt(document.getElementById("monthSelect").value);
+    const year = new Date().getFullYear();
+    return new Date(year, month + 1, 0).getDate();
+}
+
+function fillPerson(person) {
+    const days = getDaysInMonth();
+    document.getElementById(person).value = days;
+}
+
 function calculateSplit() {
-
-    const people = ["Dya", "Jay", "Kyle", "Anthony", "Simon"];
-
-    const totalBill = parseFloat(document.getElementById("bill").value) || 0;
+    const bill = parseFloat(document.getElementById("bill").value) || 0;
 
     let totalDays = 0;
 
-    people.forEach(person => {
-        totalDays += parseFloat(document.getElementById(person).value) || 0;
+    people.forEach(p => {
+        totalDays += parseFloat(document.getElementById(p).value) || 0;
     });
 
     if (totalDays === 0) {
-        alert("Please enter at least one day stayed.");
+        alert("Enter at least one person's days.");
         return;
     }
 
-    const costPerDay = totalBill / totalDays;
+    const costPerDay = bill / totalDays;
 
-    people.forEach(person => {
-        const days = parseFloat(document.getElementById(person).value) || 0;
+    people.forEach(p => {
+        const days = parseFloat(document.getElementById(p).value) || 0;
         const owed = costPerDay * days;
 
-        document.getElementById(`${person}-result`).textContent =
+        document.getElementById(`${p}-result`).textContent =
             `$${owed.toFixed(2)}`;
     });
 }
+
 </script>
 
 </body>
