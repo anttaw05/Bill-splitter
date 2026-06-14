@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Utility Bill Splitter</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        background: #f4f6f9;
+        display: flex;
+        justify-content: center;
+        padding: 40px;
+    }
+
+    .container {
+        background: white;
+        width: 700px;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .bill-section {
+        margin-bottom: 25px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 6px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        text-align: center;
+    }
+
+    th {
+        background: #f8f9fa;
+    }
+
+    button {
+        width: 100%;
+        padding: 14px;
+        margin-top: 25px;
+        border: none;
+        border-radius: 8px;
+        background: #007bff;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #0056b3;
+    }
+
+    .result {
+        font-weight: bold;
+        color: #28a745;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Utility Bill Splitter</h1>
+
+    <div class="bill-section">
+        <label for="bill">Utility Bill This Month ($)</label>
+        <input type="number" id="bill" placeholder="Enter total bill">
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Person</th>
+                <th>Days Stayed</th>
+                <th>Amount Owed</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <tr>
+                <td>Dya</td>
+                <td><input type="number" id="Dya" min="0"></td>
+                <td class="result" id="Dya-result">$0.00</td>
+            </tr>
+            <tr>
+                <td>Jay</td>
+                <td><input type="number" id="Jay" min="0"></td>
+                <td class="result" id="Jay-result">$0.00</td>
+            </tr>
+            <tr>
+                <td>Kyle</td>
+                <td><input type="number" id="Kyle" min="0"></td>
+                <td class="result" id="Kyle-result">$0.00</td>
+            </tr>
+            <tr>
+                <td>Anthony</td>
+                <td><input type="number" id="Anthony" min="0"></td>
+                <td class="result" id="Anthony-result">$0.00</td>
+            </tr>
+            <tr>
+                <td>Simon</td>
+                <td><input type="number" id="Simon" min="0"></td>
+                <td class="result" id="Simon-result">$0.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button onclick="calculateSplit()">Calculate</button>
+</div>
+
+<script>
+function calculateSplit() {
+
+    const people = ["Dya", "Jay", "Kyle", "Anthony", "Simon"];
+
+    const totalBill = parseFloat(document.getElementById("bill").value) || 0;
+
+    let totalDays = 0;
+
+    people.forEach(person => {
+        totalDays += parseFloat(document.getElementById(person).value) || 0;
+    });
+
+    if (totalDays === 0) {
+        alert("Please enter at least one day stayed.");
+        return;
+    }
+
+    const costPerDay = totalBill / totalDays;
+
+    people.forEach(person => {
+        const days = parseFloat(document.getElementById(person).value) || 0;
+        const owed = costPerDay * days;
+
+        document.getElementById(`${person}-result`).textContent =
+            `$${owed.toFixed(2)}`;
+    });
+}
+</script>
+
+</body>
+</html>
